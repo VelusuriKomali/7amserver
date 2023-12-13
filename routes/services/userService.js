@@ -1,4 +1,5 @@
 var userDAO = require('../dao/userDAO')
+var jwt=require('jsonwebtoken')
 async function saveUserService(data){
 const result = await userDAO.saveUserDAO(data);
 return result;
@@ -12,9 +13,15 @@ delete obj.password
 }
 async function authService(data){
     const result = await userDAO.authDAO(data);
+   if (result.length){
+   const token= jwt.sign(data,"my-token")
+   result[0].token=token
+   }
     return result;
 }
-async function updateUserService(id){
+       // "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJLb21hbGlAZ21haWwuY29tIiwicHdkIjoia29tYWxpIiwiaWF0IjoxNzAyNDAyNzUzfQ.4MHjWEF12chiC8pmG-eHO8R3TTXslPMNUXvsiWUaW2k
+        
+async function updateUserService(id,data){
 const result =  await userDAO.updateUserDAO(id,data);
   return result;
 }
